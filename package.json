@@ -1,0 +1,15 @@
+{
+  "name": "music-organizer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:blakekjohnson/music-organizer",
+  "author": "Blake Johnson <blake.k.johnson.4@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"cd ./client && npm start\" \"cd ./server && npm run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^5.0.0"
+  }
+}
