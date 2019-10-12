@@ -14,9 +14,8 @@ playlistRouter.get('/:user_id', async (req, res) => {
     let data = doc.toJSON();
 
     if (data.expire < Date.now()) {
-      await get(`/auth/refresh/${id}`);
-      doc = await User.findOne({ id: user_id }).exec();
-      data = doc.toJSON();
+      res.status(403).send('Access token expired');
+      return;
     }
 
     let query = querystring.stringify({
@@ -41,11 +40,10 @@ playlistRouter.get('/:user_id/:playlist_id/gettracks', async (req, res) => {
   try {
     let userdoc = await User.findOne({ id: user_id }).exec();
     let userdata = userdoc.toJSON();
-
-    if (userdata.expire < Date.now()) {
-      await get(`/auth/refresh/${id}`);
-      userdoc = await User.findOne({ id: user_id }).exec();
-      userdata = userdoc.toJSON();
+    
+    if (data.expire < Date.now()) {
+      res.status(403).send('Access token expired');
+      return;
     }
 
     let query = querystring.stringify({
@@ -74,10 +72,9 @@ playlistRouter.put('/:user_id/:playlist_id/reordertracks', async (req, res) => {
     let userdoc = await User.findOne({ id: user_id }).exec();
     let userdata = userdoc.toJSON();
 
-    if (userdata.expire < Date.now()) {
-      await get(`/auth/refresh/${id}`);
-      userdoc = await User.findOne({ id: user_id }).exec();
-      userdata = userdoc.toJSON();
+    if (data.expire < Date.now()) {
+      res.status(403).send('Access token expired');
+      return;
     }
 
     let body = { uris };
