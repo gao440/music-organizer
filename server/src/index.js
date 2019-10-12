@@ -9,8 +9,10 @@ mongoose.connect(CONNECT_STRING, { useNewUrlParser: true });
 // Setup express server
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const app = express();
 app.use(bodyParser.json());
+app.use(cors());
 
 // Setup routers
 app.use('/auth', require('./routes/authRouter'));
