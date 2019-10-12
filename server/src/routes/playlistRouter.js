@@ -9,15 +9,37 @@ playlistRouter.get('/:id', async (req, res) => {
 
   try {
     let doc = await User.findOne({ id }).exec();
-    doc = doc.toJSON();
+    let data = doc.toJSON();
 
     let options = {
       headers: {
-        'Authorization': `Bearer ${doc.access}`
+        'Authorization': `Bearer ${data.access}`
       }
     };
 
     let ax_res = await get('https://api.spotify.com/v1/me/playlists', options);
+    res.status(200).send(ax_res.data);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
+playlistRouter.get('/:user_id/:playlist_id', async (req, res) => {
+  let { user_id, playlist_id } = req.params;
+
+  try {
+    let userdoc = await User.findOne({ id: user_id }).exec();
+    let userdata = userdoc.toJSON();
+
+    let url = `https://api.spotify.com/v1/playlists/${playlist_id}/tracks`;
+
+    let options = {
+      headers: {
+        'Authorization': `Bearer ${userdata.access}`
+      }
+    };
+
+    let ax_res = await get(url, options);
     res.status(200).send(ax_res.data);
   } catch (e) {
     res.status(400).send(e);
