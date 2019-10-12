@@ -6,16 +6,16 @@ const querystring = require('query-string');
 
 let playlistRouter = Router();
 
-playlistRouter.get('/:id', async (req, res) => {
-  let { id } = req.params;
+playlistRouter.get('/:user_id', async (req, res) => {
+  let { user_id } = req.params;
 
   try {
-    let doc = await User.findOne({ id }).exec();
+    let doc = await User.findOne({ id: user_id }).exec();
     let data = doc.toJSON();
 
     if (data.expire < Date.now()) {
       await get(`/auth/refresh/${id}`);
-      doc = await User.findOne({ id }).exec();
+      doc = await User.findOne({ id: user_id }).exec();
       data = doc.toJSON();
     }
 
@@ -35,7 +35,7 @@ playlistRouter.get('/:id', async (req, res) => {
   }
 });
 
-playlistRouter.get('/:user_id/:playlist_id', async (req, res) => {
+playlistRouter.get('/:user_id/:playlist_id/gettracks', async (req, res) => {
   let { user_id, playlist_id } = req.params;
 
   try {
@@ -66,7 +66,7 @@ playlistRouter.get('/:user_id/:playlist_id', async (req, res) => {
   }
 });
 
-playlistRouter.put('/:user_id/:playlist_id', async (req, res) => {
+playlistRouter.put('/:user_id/:playlist_id/reordertracks', async (req, res) => {
   let { user_id, playlist_id } = req.params;
   let { uris } = req.body;
 
