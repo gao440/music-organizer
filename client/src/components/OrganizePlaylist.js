@@ -11,6 +11,7 @@ export class OrganizePlaylist extends React.Component {
         userPlaylists: [],
         selectedPlaylist: "",
         selected: false,
+        filtered: false,
         features: [false, false, false, false, false, false, false, false, false, false]
     }
   }
@@ -26,8 +27,8 @@ export class OrganizePlaylist extends React.Component {
     this.setState({ ...this.state, [name]: event.target.value });
   }
 
-  handleClick() {
-    this.setState({selected: true})
+  handleClick(state) {
+    this.setState({[state]: true})
   }
 
   handleToggle(index) {
@@ -59,14 +60,14 @@ export class OrganizePlaylist extends React.Component {
               </Grid>
               <Grid item>
                 <Button variant="contained" color="primary" style={{marginTop: '12px'}}
-                  onClick={()=>this.handleClick()}
+                  onClick={()=>this.handleClick('selected')}
                 >
                   Next
                 </Button>
               </Grid>
           </Grid>
       )
-    } else {
+    } else if(!this.state.filtered) {
       return (
         <Grid container item xs={12} direction="column" alignItems="center">
             <Grid item justify="center">
@@ -115,10 +116,19 @@ export class OrganizePlaylist extends React.Component {
                     label="Tempo"
                   />
                 </FormGroup>
-              </FormControl>
+              </FormControl>           
+            </Grid>
+            <Grid item>
+              <Button variant="contained" color="primary" style={{marginTop: '12px'}}
+                onClick={()=>this.handleClick('filtered')}
+              >
+                Next
+              </Button>
             </Grid>
         </Grid>
       )
+    } else {
+      //rearrange
     }
   }
 }
