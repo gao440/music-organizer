@@ -41,7 +41,7 @@ playlistRouter.get('/:user_id/:playlist_id/gettracks', async (req, res) => {
     let userdoc = await User.findOne({ id: user_id }).exec();
     let userdata = userdoc.toJSON();
     
-    if (data.expire < Date.now()) {
+    if (userdata.expire < Date.now()) {
       res.status(403).send('Access token expired');
       return;
     }
@@ -72,7 +72,7 @@ playlistRouter.put('/:user_id/:playlist_id/reordertracks', async (req, res) => {
     let userdoc = await User.findOne({ id: user_id }).exec();
     let userdata = userdoc.toJSON();
 
-    if (data.expire < Date.now()) {
+    if (userdata.expire < Date.now()) {
       res.status(403).send('Access token expired');
       return;
     }
