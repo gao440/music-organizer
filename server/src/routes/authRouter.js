@@ -65,4 +65,7 @@ authRouter.get('/callback', async (req, res) => {
   }
 });
 
+authRouter.get('/refresh/:id', async (req, res) => {
+});
+
 module.exports = authRouter;
