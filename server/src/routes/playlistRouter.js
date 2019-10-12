@@ -11,6 +11,12 @@ playlistRouter.get('/:id', async (req, res) => {
     let doc = await User.findOne({ id }).exec();
     let data = doc.toJSON();
 
+    if (data.expire < Date.now()) {
+      await get(`/auth/refresh/${id}`);
+      doc = await User.findOne({ id }).exec();
+      data = doc.toJSON();
+    }
+
     let options = {
       headers: {
         'Authorization': `Bearer ${data.access}`
@@ -30,6 +36,12 @@ playlistRouter.get('/:user_id/:playlist_id', async (req, res) => {
   try {
     let userdoc = await User.findOne({ id: user_id }).exec();
     let userdata = userdoc.toJSON();
+
+    if (userdata.expire < Date.now()) {
+      await get(`/auth/refresh/${id}`);
+      userdoc = await User.findOne({ id: user_id }).exec();
+      userdata = userdoc.toJSON();
+    }
 
     let url = `https://api.spotify.com/v1/playlists/${playlist_id}/tracks`;
 

@@ -66,6 +66,33 @@ authRouter.get('/callback', async (req, res) => {
 });
 
 authRouter.get('/refresh/:id', async (req, res) => {
+  let { id } = req.params;
+
+  try {
+    let userdoc = await User.findOne({ id }).exec();
+    let userdata = userdoc.toJSON();
+
+    let req_body = querystring.stringify({
+      grant_type: 'refresh_token',
+      refresh_token: userdata.refresh
+    });
+    let options = {
+      headers: {
+        'Authorization': AUTH_HEADER,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    };
+
+    let axios_res = await post('https://accounts.spotify.com/api/token', req_body, options);
+    let data = axios_res.data;
+    await userdoc.update({
+      access: data.access_token,
+      expire: Date.now() + (3600 * 1000)
+    });
+    res.status(200).send(data);
+  } catch (e) {
+    res.status(400).send(e);
+  }
 });
 
 module.exports = authRouter;
