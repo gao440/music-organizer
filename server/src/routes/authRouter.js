@@ -17,6 +17,17 @@ const AUTH_HEADER = `Basic ${base64.encode(`${process.env.CLIENT_ID}:${process.e
 authRouter.get('/spotify/:id', async (req, res) => {
   let { id } = req.params;
 
+  try {
+    let userdoc = await User.findOne({ id }).exec();
+    if (userdoc) {
+      res.status(400).send('A user with that id already exists');
+      return;
+    }
+  } catch (e) {
+    res.status(400).send('Unable to check if user exists');
+    return;
+  }
+
   // Construct query string for authorize URL
   const query = querystring.stringify({
     client_id: process.env.CLIENT_ID,
