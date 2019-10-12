@@ -13,6 +13,7 @@ const app = express();
 app.use(bodyParser.json());
 
 // Setup routers
+app.use('/auth', require('./routes/authRouter'));
 
 // Start server
 app.listen(3001, () => {
