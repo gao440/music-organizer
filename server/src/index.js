@@ -17,6 +17,7 @@ app.use(cors());
 // Setup routers
 app.use('/auth', require('./routes/authRouter'));
 app.use('/playlists', require('./routes/playlistRouter'));
+app.use('/tracks', require('./routes/trackRouter'));
 
 // Start server
 app.listen(3001, () => {
