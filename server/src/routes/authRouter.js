@@ -53,7 +53,7 @@ authRouter.get('/spotify/:id', async (req, res) => {
   });
   
   // Redirect to the authorization page
-  res.status(200).redirect(`https://accounts.spotify.com/authorize?${query}`);
+  res.status(200).send(`https://accounts.spotify.com/authorize?${query}`);
 });
 
 authRouter.get('/callback', async (req, res) => {

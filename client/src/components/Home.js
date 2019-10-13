@@ -1,41 +1,60 @@
 import React from 'react'
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Typography from '@material-ui/core/Typography';
-import SpotifyLogo from '../images/spotify.png'
+import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
+import SpotifyButton from './SpotifyButton'
+import SpotifyAuthModal from './SpotifyAuthModal'
 
 export class Home extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      username: null,
+      showModal: false
+    }
+  }
+
+  componentDidMount() {
+    if (localStorage.getItem('mo-username')) {
+      this.setState({ username: localStorage.getItem('mo-username') })
+    }
+  }
+
+  logout() {
+    localStorage.removeItem('mo-username');
+    this.setState({ username: null });
+  }
+
+  showModal() {
+    this.setState({ showModal: true })
+  }
+
+  hideModal() {
+    this.setState({ showModal: false })
+  }
+
   render() {
     return (
       <div className="Home">
-          <Grid
+        <SpotifyAuthModal
+          open={this.state.showModal}
+          handleClose={this.hideModal.bind(this)}
+          closeModal={this.hideModal.bind(this)}
+          setUsernameGlobal={(username) => this.setState({ username })}/>
+        <Grid
             container
             direction="column"
             justify="center"
             alignItems="center"
-            style= {{marginTop: "15px"}}
-            >
-                <Card style= {{maxWidth: "385px"}} >
-                <CardActionArea>
-                    <CardMedia
-                    style= {{height: "365px", float: "center"}} 
-                    image= {SpotifyLogo}
-                    title= "Spotify Logo"
-                    />
-                    <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
-                        Connect Your Spotify
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                        Connect your spotify now, to organize your playlist!
-                    </Typography>
-                    </CardContent>
-                </CardActionArea>
-                </Card>
-             </Grid>  
+            style= {{marginTop: "15px"}}>
+          { !this.state.username && <SpotifyButton onClick={this.showModal.bind(this)}/> }
+          {
+            this.state.username && (
+              <Button onClick={this.logout.bind(this)}>
+                Logout
+              </Button>
+            )
+          }
+        </Grid>
       </div>
     )
   }
