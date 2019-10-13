@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import { NavBar } from '../components/NavBar'
 import { OrganizePlaylist } from '../components/OrganizePlaylist'
 
+
 export class App extends React.Component {
   render() {
     return (
@@ -11,6 +12,7 @@ export class App extends React.Component {
         <BrowserRouter>
           <Switch>
             {/* <Route exact path="/" component={Home}/> */}
+
             <Route exact path="/organize-playlist" component={OrganizePlaylist}/>
           </Switch>
         </BrowserRouter>

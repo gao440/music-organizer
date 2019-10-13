@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Button, TextField, Select, FormControl, InputLabel, Checkbox, FormControlLabel, FormGroup } from '@material-ui/core'
+import { Grid, Button, Select, FormControl, Checkbox, FormControlLabel, FormGroup } from '@material-ui/core'
 const axios = require('axios')
 
 export class OrganizePlaylist extends React.Component {
@@ -15,6 +15,7 @@ export class OrganizePlaylist extends React.Component {
         filtered: false,
         reorder: false,
         songsFeatures: [],
+
         features: [false, false, false, false, false, false, false, false, false, false]
     }
   }
@@ -33,6 +34,7 @@ export class OrganizePlaylist extends React.Component {
       url: `/playlists/cdw2014/${id}/gettracks`
     }).then(data => data.data)
   }
+
   
   handleChange = name => event => {
     this.setState({ ...this.state, [name]: event.target.value });
@@ -117,6 +119,7 @@ export class OrganizePlaylist extends React.Component {
                     {this.state.userPlaylists.map(playlist => {
                       return (
                         <option key={playlist.id} value={playlist.name}>{playlist.name}</option>
+
                       )
                     })}
                   </Select>
@@ -135,6 +138,7 @@ export class OrganizePlaylist extends React.Component {
       return (
         <Grid container item xs={12} direction="column" alignItems="center">
             <Grid container item justify="center">
+
               <h1>Select features to organize {this.state.selectedPlaylist} by:</h1>
               <FormControl component="fieldset">
                 <FormGroup>
@@ -212,6 +216,7 @@ export class OrganizePlaylist extends React.Component {
     )     
   }
 }
+
 
 
 export default OrganizePlaylist
