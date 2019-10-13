@@ -9,7 +9,7 @@ export class NavBar extends React.Component {
   render() {
     return (
       <div className="NavBar">
-        <AppBar position="static">
+        <AppBar position="static" style={{backgroundColor: "Black"}}>
           <Toolbar>
             <Link href="/">
                 <IconButton>
@@ -17,15 +17,15 @@ export class NavBar extends React.Component {
                 </IconButton>
             </Link>
             <Link href="/" style={{color:'white', textDecoration: 'none'}}>
-                <Typography variant="h5">
+                <Typography variant="h5" style= {{fontFamily: "Georgia"}}>
                     Music Organizer
                 </Typography>
             </Link>                 
-            <Link href="/help" style={{position:'absolute', right:0}}>
+            {/**<Link href="/help" style={{position:'absolute', right:0}}>
                 <IconButton>
                     <HelpIcon style={{color:'white'}} fontSize="large" />
                 </IconButton>
-            </Link>
+    </Link>**/}
           </Toolbar>
         </AppBar>
       </div>

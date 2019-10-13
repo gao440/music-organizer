@@ -7,8 +7,9 @@ import Home from '../components/Home'
 
 export class App extends React.Component {
   render() {
+    document.body.style = 'background: Black'
     return (
-      <div className="App">
+      <div>
         <NavBar/>
         <BrowserRouter>
           <Switch>
