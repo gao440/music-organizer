@@ -1,4 +1,4 @@
-Vibify
+## Vibify
 A places and events around us all have many stimulations that effect how we experience them like touch, sight, and sound. Pictures are able to capture just one dimension of the experience. Sometimes to understand more about what is happening in a photo you need audio aids. This is where vibify comes in, vibify will create a playlist around an inputed image that will be personalized to the user and the photo provided.
 
 ## What it does
