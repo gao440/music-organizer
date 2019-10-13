@@ -16,11 +16,19 @@ export class OrganizePlaylist extends React.Component {
     }
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     axios({
       method: "GET",
       url: "/playlists/cdw2014"
     }).then(data => data.data).then(data => this.setState({userPlaylists: data.items}))
+  }
+
+  async getTracks() {
+    let id = this.state.userPlaylists.filter(playlist => playlist.name === this.state.selectedPlaylist)[0].id
+    return await axios({
+      method: "GET",
+      url: `/playlists/cdw2014/${id}/gettracks`
+    }).then(data => data.data)
   }
   
   handleChange = name => event => {
@@ -42,7 +50,7 @@ export class OrganizePlaylist extends React.Component {
     if(!this.state.selected) {
       return (
           <Grid container item xs={12} direction="column" alignItems="center">
-              <Grid item justify="center">
+              <Grid container item justify="center">
                 <h1>Select a Playlist</h1>
                 <FormControl>
                   <Select
@@ -50,9 +58,10 @@ export class OrganizePlaylist extends React.Component {
                     value={this.state.selectedPlaylist}
                     onChange={this.handleChange('selectedPlaylist')}
                   >
+                    <option value=""></option>
                     {this.state.userPlaylists.map(playlist => {
                       return (
-                        <option value={playlist.name}>{playlist.name}</option>
+                        <option key={playlist.id} value={playlist.name}>{playlist.name}</option>
                       )
                     })}
                   </Select>
@@ -70,7 +79,7 @@ export class OrganizePlaylist extends React.Component {
     } else if(!this.state.filtered) {
       return (
         <Grid container item xs={12} direction="column" alignItems="center">
-            <Grid item justify="center">
+            <Grid container item justify="center">
               <h1>Select features to organize {this.state.selectedPlaylist} by:</h1>
               <FormControl component="fieldset">
                 <FormGroup>
@@ -127,10 +136,46 @@ export class OrganizePlaylist extends React.Component {
             </Grid>
         </Grid>
       )
-    } else {
-      //rearrange
+    } else if (this.state.filtered) {
+      let tracks = this.getTracks()
+      let songIds = []
+      let songsFeatures = []
+      tracks.then(data => {
+        data.items.array.forEach(song => {
+          songIds.push(song.id)
+        })
+      }).then(() => {
+        axios({
+          method: "GET",
+          url: "/track/cdw2014",
+          data: songIds
+        }).then(data => data.data).then(data => {
+          data.forEach(song => {
+            songsFeatures.push({
+              "id": song.id,
+              features: [song.danceability,
+                          song.energy,
+                          song.key,
+                          song.loudness,
+                          song.speechiness,
+                          song.acousticness,
+                          song.instrumentalness,
+                          song.liveness,
+                          song.valence,
+                          song.tempo]
+              })
+          })
+        })
+      })
+      
+        console.log(songsFeatures)
+      }
+      return (
+        <p></p>
+      )
+      
     }
   }
-}
+
 
 export default OrganizePlaylist
