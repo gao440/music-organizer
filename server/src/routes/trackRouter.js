@@ -34,10 +34,11 @@ trackRouter.get('/:user_id/:track_id', async (req, res) => {
 
 trackRouter.get('/:user_id', async (req, res) => {
   let { user_id } = req.params;
-  let { items } = req.body;
+  let { items } = req.query;
+  // let { items } = req.body;
 
-  items = items.join(',');
-
+  // items = items.join(',');
+  console.log(items)
   try {
     let userdoc = await User.findOne({ id: user_id }).exec();
     let userdata = userdoc.toJSON();
