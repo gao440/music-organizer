@@ -18,6 +18,7 @@ app.use(cors());
 app.use('/auth', require('./routes/authRouter'));
 app.use('/playlists', require('./routes/playlistRouter'));
 app.use('/tracks', require('./routes/trackRouter'));
+app.use('/faces', require('./routes/faceRouter'));
 
 // Start server
 app.listen(3001, () => {
