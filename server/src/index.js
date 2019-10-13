@@ -19,6 +19,7 @@ app.use('/auth', require('./routes/authRouter'));
 app.use('/playlists', require('./routes/playlistRouter'));
 app.use('/tracks', require('./routes/trackRouter'));
 app.use('/faces', require('./routes/faceRouter'));
+app.use('/vision', require('./routes/visionRouter'));
 
 // Start server
 app.listen(3001, () => {

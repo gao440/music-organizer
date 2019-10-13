@@ -9,9 +9,13 @@ export class OrganizePlaylist extends React.Component {
     this.state = {
         userID: "",
         userPlaylists: [],
+        songIds: [],
         selectedPlaylist: "",
         selected: false,
         filtered: false,
+        reorder: false,
+        songsFeatures: [],
+
         features: [false, false, false, false, false, false, false, false, false, false]
     }
   }
@@ -22,6 +26,15 @@ export class OrganizePlaylist extends React.Component {
       url: "/playlists/cdw2014"
     }).then(data => data.data).then(data => this.setState({userPlaylists: data.items}))
   }
+
+  async getTracks() {
+    let id = this.state.userPlaylists.filter(playlist => playlist.name === this.state.selectedPlaylist)[0].id
+    return await axios({
+      method: "GET",
+      url: `/playlists/cdw2014/${id}/gettracks`
+    }).then(data => data.data)
+  }
+
   
   handleChange = name => event => {
     this.setState({ ...this.state, [name]: event.target.value });
@@ -38,6 +51,58 @@ export class OrganizePlaylist extends React.Component {
     this.setState({features: newFeatures})
   }
 
+  getTrackFeatures(songIds) {
+    let songsFeatures = []
+    try {
+      axios({
+        method: "GET",
+        url: `/tracks/cdw2014?items=${songIds}`,
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      }).then(data => data.data).then(data => {
+        data.audio_features.forEach(song => {
+          songsFeatures.push({
+            "id": song.id,
+            features: [song.danceability,
+                        song.energy,
+                        song.key,
+                        song.loudness,
+                        song.speechiness,
+                        song.acousticness,
+                        song.instrumentalness,
+                        song.liveness,
+                        song.valence,
+                        song.tempo]
+            })
+        })
+        this.setState({songsFeatures: songsFeatures, reorder: true})
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  reorderPlaylist() {
+    let { songsFeatures } = this.state
+    songsFeatures.forEach(song => {
+      let sum = 0
+      song.features.forEach((feature, i) => {
+        sum = sum + (feature * this.state.features[i])
+        song.sum = sum
+      })
+    })
+    songsFeatures = songsFeatures.sort((a,b) => {
+      return a.sum - b.sum
+    })
+    let uris = []
+    songsFeatures.forEach(song => uris.push("spotify:track:"+song.id))
+    let id = this.state.userPlaylists.filter(playlist => playlist.name === this.state.selectedPlaylist)[0].id
+    axios({
+      method: "PUT",
+      url: `/playlists/cdw2014/${id}/reordertracks`,
+      data:{uris: uris}
+    })
+  }
+
   render() {
     if(!this.state.selected) {
       return (
@@ -50,9 +115,11 @@ export class OrganizePlaylist extends React.Component {
                     value={this.state.selectedPlaylist}
                     onChange={this.handleChange('selectedPlaylist')}
                   >
+                    <option value=""></option>
                     {this.state.userPlaylists.map(playlist => {
                       return (
-                        <option value={playlist.name}>{playlist.name}</option>
+                        <option key={playlist.id} value={playlist.name}>{playlist.name}</option>
+
                       )
                     })}
                   </Select>
@@ -127,10 +194,28 @@ export class OrganizePlaylist extends React.Component {
             </Grid>
         </Grid>
       )
-    } else {
-      //rearrange
+    } else if (this.state.filtered && !this.state.reorder) {
+
+      let tracks = this.getTracks()
+      let songIds = []
+
+      tracks.then(data => {
+        data.items.map(song => {
+          songIds.push(song.track.id)
+        })
+      }).finally(() => this.getTrackFeatures(songIds))
+    } else if (this.state.reorder) {
+      this.reorderPlaylist()
+      return (
+        <p></p>
+      )
     }
+    return (
+      <p>Loading tracks...</p>
+    )     
   }
 }
+
+
 
 export default OrganizePlaylist
