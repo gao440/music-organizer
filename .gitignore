@@ -1,3 +1,6 @@
+# Ignore GCP key
+key.json
+
 # Logs
 logs
 *.log
