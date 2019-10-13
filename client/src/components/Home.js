@@ -58,6 +58,11 @@ export class Home extends React.Component {
                   alignItems="center"
                   style= {{margin: "25px"}}>
 
+                <Fab href='/generate-playlist' variant='extended' color='primary' aria-label='add'
+                style={{fontSize: "20px", width: "200px", height: "75px", color: "white", fontFamily: "Georgia", textAlign: "center", marginBottom: "30px"}}>
+                  Generate a playlist
+                </Fab>
+
                 <Fab href="/organize-playlist" variant="extended" aria-label="add" 
                 style= {{fontSize: "20px", width: "200px", height: "75px", color: "white", backgroundColor: "LimeGreen", fontFamily: "Georgia", textAlign:"center"}}>
                   Organize Your Playlist

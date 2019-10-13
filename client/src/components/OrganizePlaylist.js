@@ -15,7 +15,7 @@ export class OrganizePlaylist extends React.Component {
         filtered: false,
         reorder: false,
         songsFeatures: [],
-
+        organized: false,
         features: [false, false, false, false, false, false, false, false, false, false]
     }
   }
@@ -23,7 +23,7 @@ export class OrganizePlaylist extends React.Component {
   async componentWillMount() {
     axios({
       method: "GET",
-      url: "/playlists/cdw2014"
+      url: `/playlists/${localStorage.getItem('mo-username')}`
     }).then(data => data.data).then(data => this.setState({userPlaylists: data.items}))
   }
 
@@ -31,7 +31,7 @@ export class OrganizePlaylist extends React.Component {
     let id = this.state.userPlaylists.filter(playlist => playlist.name === this.state.selectedPlaylist)[0].id
     return await axios({
       method: "GET",
-      url: `/playlists/cdw2014/${id}/gettracks`
+      url: `/playlists/${localStorage.getItem('mo-username')}/${id}/gettracks`
     }).then(data => data.data)
   }
 
@@ -56,7 +56,7 @@ export class OrganizePlaylist extends React.Component {
     try {
       axios({
         method: "GET",
-        url: `/tracks/cdw2014?items=${songIds}`,
+        url: `/tracks/${localStorage.getItem('mo-username')}?items=${songIds}`,
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       }).then(data => data.data).then(data => {
         data.audio_features.forEach(song => {
@@ -98,12 +98,21 @@ export class OrganizePlaylist extends React.Component {
     let id = this.state.userPlaylists.filter(playlist => playlist.name === this.state.selectedPlaylist)[0].id
     axios({
       method: "PUT",
-      url: `/playlists/cdw2014/${id}/reordertracks`,
+      url: `/playlists/${localStorage.getItem('mo-username')}/${id}/reordertracks`,
       data:{uris: uris}
-    })
+    }).then(() => {
+      this.setState({ organized: true });
+    });
   }
 
   render() {
+    if (this.state.organized) {
+      return (
+        <div style={{color: 'white'}}>
+          THE PLAYLIST WAS ORGANIZED
+        </div>
+      );
+    }
     if(!this.state.selected) {
       return (
           <Grid container item xs={12} direction="column" alignItems="center">
