@@ -9,14 +9,17 @@ export class OrganizePlaylist extends React.Component {
     this.state = {
         userID: "",
         userPlaylists: [],
+        songIds: [],
         selectedPlaylist: "",
         selected: false,
         filtered: false,
+        reorder: false,
+        songsFeatures: [],
         features: [false, false, false, false, false, false, false, false, false, false]
     }
   }
 
-  async componentDidMount() {
+  async componentWillMount() {
     axios({
       method: "GET",
       url: "/playlists/cdw2014"
@@ -44,6 +47,58 @@ export class OrganizePlaylist extends React.Component {
     let newFeatures = this.state.features
     newFeatures[index] = updated
     this.setState({features: newFeatures})
+  }
+
+  getTrackFeatures(songIds) {
+    let songsFeatures = []
+    try {
+      axios({
+        method: "GET",
+        url: `/tracks/cdw2014?items=${songIds}`,
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      }).then(data => data.data).then(data => {
+        data.audio_features.forEach(song => {
+          songsFeatures.push({
+            "id": song.id,
+            features: [song.danceability,
+                        song.energy,
+                        song.key,
+                        song.loudness,
+                        song.speechiness,
+                        song.acousticness,
+                        song.instrumentalness,
+                        song.liveness,
+                        song.valence,
+                        song.tempo]
+            })
+        })
+        this.setState({songsFeatures: songsFeatures, reorder: true})
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  reorderPlaylist() {
+    let { songsFeatures } = this.state
+    songsFeatures.forEach(song => {
+      let sum = 0
+      song.features.forEach((feature, i) => {
+        sum = sum + (feature * this.state.features[i])
+        song.sum = sum
+      })
+    })
+    songsFeatures = songsFeatures.sort((a,b) => {
+      return a.sum - b.sum
+    })
+    let uris = []
+    songsFeatures.forEach(song => uris.push("spotify:track:"+song.id))
+    let id = this.state.userPlaylists.filter(playlist => playlist.name === this.state.selectedPlaylist)[0].id
+    axios({
+      method: "PUT",
+      url: `/playlists/cdw2014/${id}/reordertracks`,
+      data:{uris: uris}
+    })
   }
 
   render() {
@@ -136,46 +191,27 @@ export class OrganizePlaylist extends React.Component {
             </Grid>
         </Grid>
       )
-    } else if (this.state.filtered) {
+    } else if (this.state.filtered && !this.state.reorder) {
+
       let tracks = this.getTracks()
       let songIds = []
-      let songsFeatures = []
+
       tracks.then(data => {
-        data.items.array.forEach(song => {
-          songIds.push(song.id)
+        data.items.map(song => {
+          songIds.push(song.track.id)
         })
-      }).then(() => {
-        axios({
-          method: "GET",
-          url: "/track/cdw2014",
-          data: songIds
-        }).then(data => data.data).then(data => {
-          data.forEach(song => {
-            songsFeatures.push({
-              "id": song.id,
-              features: [song.danceability,
-                          song.energy,
-                          song.key,
-                          song.loudness,
-                          song.speechiness,
-                          song.acousticness,
-                          song.instrumentalness,
-                          song.liveness,
-                          song.valence,
-                          song.tempo]
-              })
-          })
-        })
-      })
-      
-        console.log(songsFeatures)
-      }
+      }).finally(() => this.getTrackFeatures(songIds))
+    } else if (this.state.reorder) {
+      this.reorderPlaylist()
       return (
         <p></p>
       )
-      
     }
+    return (
+      <p>Loading tracks...</p>
+    )     
   }
+}
 
 
 export default OrganizePlaylist
