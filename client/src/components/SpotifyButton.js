@@ -8,17 +8,17 @@ import SpotifyLogo from '../images/spotify.png'
 
 const SpotifyButton = ({ onClick }) => {
   return (
-    <Card style= {{maxWidth: "385px"}} onClick={onClick}>
+    <Card style= {{maxWidth: "550px"}} onClick={onClick}>
       <CardActionArea>
         <CardMedia
-          style= {{height: "365px", float: "center"}} 
+          style= {{height: "357px", backgroundColor: "Black"}} 
           image= {SpotifyLogo}
           title= "Spotify Logo"/>
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
+        <CardContent style= {{backgroundColor: "Black"}}>
+          <Typography gutterBottom variant="h5" component="h2" style= {{color: "White", fontFamily: "Georgia", textAlign:"center"}}>
             Connect Your Spotify
           </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
+          <Typography variant="body2" color="textSecondary" component="p" style= {{color: "White", fontFamily: "Georgia"}}>
             Connect your spotify now, to organize your playlist!
           </Typography>
         </CardContent>

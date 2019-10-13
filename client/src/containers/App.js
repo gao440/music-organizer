@@ -6,9 +6,10 @@ import { OrganizePlaylist } from '../components/OrganizePlaylist'
 
 export class App extends React.Component {
   render() {
+    document.body.style = 'background: Black'
     return (
-      <div className="App">
-        <NavBar />
+      <div>
+        <NavBar/>
         <BrowserRouter>
           <Switch>
             {/* <Route exact path="/" component={Home}/> */}

@@ -1,8 +1,8 @@
 import React from 'react'
-import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 import SpotifyButton from './SpotifyButton'
 import SpotifyAuthModal from './SpotifyAuthModal'
+import Fab from '@material-ui/core/Fab';
 
 export class Home extends React.Component {
   constructor() {
@@ -41,17 +41,35 @@ export class Home extends React.Component {
           closeModal={this.hideModal.bind(this)}
           setUsernameGlobal={(username) => this.setState({ username })}/>
         <Grid
-            container
-            direction="column"
+            item xs={12}
+            container spacing={3}
+            direction="row"
             justify="center"
             alignItems="center"
             style= {{marginTop: "15px"}}>
           { !this.state.username && <SpotifyButton onClick={this.showModal.bind(this)}/> }
           {
             this.state.username && (
-              <Button onClick={this.logout.bind(this)}>
-                Logout
-              </Button>
+              <div>
+                <Grid
+                  container
+                  direction="column"
+                  justify="center"
+                  alignItems="center"
+                  style= {{margin: "25px"}}>
+
+                <Fab href="/organize-playlist" variant="extended" aria-label="add" 
+                style= {{fontSize: "20px", width: "200px", height: "75px", color: "white", backgroundColor: "LimeGreen", fontFamily: "Georgia", textAlign:"center"}}>
+                  Organize Your Playlist
+                </Fab>
+
+                <Fab onClick={this.logout.bind(this)} variant="extended" color="secondary" aria-label="add" 
+                style= {{margin: "25px", fontSize: "20px", width: "200px", height: "75px", fontFamily: "Georgia", textAlign:"center"}}>
+                  Logout
+                </Fab>
+
+                </Grid>
+              </div>
             )
           }
         </Grid>
