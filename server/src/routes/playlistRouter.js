@@ -92,4 +92,25 @@ playlistRouter.put('/:user_id/:playlist_id/reordertracks', async (req, res) => {
   }
 });
 
+const genPlaylist = require('../generatePlaylist');
+playlistRouter.get('/:user_id/:term/generate', async (req, res) => {
+  let { user_id, term } = req.params;
+
+  try {
+    let userdoc = await User.findOne({ id: user_id }).exec();
+    let userdata = userdoc.toJSON();
+
+    if (userdata.expire < Date.now()) {
+      res.status(403).send('Access token expired');
+      return;
+    }
+
+    let xd = await genPlaylist(userdata, term);
+    res.status(200).send(xd);
+  } catch (e) {
+    console.log(e);
+    res.status(400).send(e);
+  }
+});
+
 module.exports = playlistRouter;
