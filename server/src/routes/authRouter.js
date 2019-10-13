@@ -14,6 +14,21 @@ const SCOPES = [
 ];
 const AUTH_HEADER = `Basic ${base64.encode(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`)}`;
 
+authRouter.get('/availability/:desired_id', async (req, res) => {
+  let { desired_id } = req.params;
+
+  try {
+    let userdoc = await User.findOne({ id: desired_id }).exec();
+    if (userdoc) {
+      res.status(403).send('User with id already exists');
+    } else {
+      res.status(200).send('User id is available');
+    }
+  } catch (e) {
+    res.status(400).send('Unable to check if user exists');
+  }
+});
+
 authRouter.get('/spotify/:id', async (req, res) => {
   let { id } = req.params;
 
